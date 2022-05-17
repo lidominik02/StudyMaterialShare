@@ -1,0 +1,215 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using StudyMaterialShare.Database.Models
+@using StudyMaterialShare.Database.Repositories
+@inject SignInManager<ApplicationUser> signInManager;
+@inject UserManager<ApplicationUser> userManager;
+@inject RatingRepository _ratingRepository;
+
+@model IEnumerable<StudyMaterialShare.Web.Models.StudyMaterialViewModel>
+@{
+    ViewBag.Title = "Böngészés";
+}
+
+@section Links
+{
+}
+
+<div class="d-flex justify-content-center mb-0 pb-0">
+    <h1>Böngészés</h1>
+</div>
+<hr class="mb-3"/>
+
+@if (ViewBag.RateError != null)
+{
+	<div class="d-flex justify-content-center mb-0 pb-0">
+		<div class="alert alert-warning" role="alert">
+		  @(ViewBag.RateError)
+		</div>
+	</div>
+	
+}
+
+<div class="row">
+	<div class="col col-sm-3 mx-sm-0 mb-3"> 
+		<div class="container">
+			<form class="mx-0 px-0" asp-action="Browse" asp-controller="StudyMaterial" method="get">
+				<label class="row form-label" for="Subject">
+					Tantárgyak: <br />
+					<select class="form-select" name="Subject" asp-items="ViewBag.Subjects">
+						<option></option>
+					</select>
+				</label>
+				<label class="row form-label" for="TitleFilter">
+					Keresés címre: <br />
+					<input type="text" class="form-control" name="TitleFilter" />
+				</label>
+				<label class="row form-label" for="Sort">
+					Rendzés:
+					<select class="form-select" name="Sort">
+						<option selected value="title">Cím szerint</option>
+						<option value="upload">Feltöltés szerint</option>
+						<option value="rating">Értékelés szerint</option>
+					</select>
+				</label>
+				<div class="row">
+					<div class="form-check">
+						<input class="form-check-input" checked type="radio" name="Order" value="asc">
+						<label class="form-check-label" for="Order"> Növekvő sorrend</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="Order"value="desc">
+						<label class="form-check-label" for="Order"> Csökkenő sorrend</label>
+					</div>
+				</div>
+				<div class="row">
+					<input type="submit" value="Mehet" class="btn btn-primary" />
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="col col-sm-9 mx-sm-0">
+		@if(ViewBag.Error != null)
+		{
+			<p> @(ViewBag.Error)</p>
+		}
+		<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-1 justify-content-center">
+			@foreach(var item in Model)
+			{
+				<div class="col justify-content-center">
+					<div class="card" style="width: 18rem;">
+						<div class="card-body">
+							<h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+							<h6 class="card-subtitle mb-2 text-muted">@Html.DisplayFor(modelItem => item.Subject)</h6>
+							<p class="card-text">
+								Letöltések száma: @Html.DisplayFor(modelItem => item.Downloads) <br>
+								Átlag értékelés: @Html.DisplayFor(modelItem => item.AvarageRating) <br>
+								Feltöltve: @Html.DisplayFor(modelItem => item.UploadedAt) <br>
+								Feltöltötte: @Html.DisplayFor(modelItem => item.User) <br>
+							</p>
+							@if(signInManager.IsSignedIn(User))
+							{
+								<div class="d-flex justify-content-between">
+									<form method="post" class="starRateForm" asp-action="Rate" asp-controller="StudyMaterial" asp-route-id="@(item.Id)" method="post">
+										@{
+											Rating? rating = (ViewBag.RatingsForUser as IEnumerable<Rating>)
+																?.FirstOrDefault(rating => rating.StudyMaterialId == item.Id);
+										}
+										
+										@if(rating is not null)
+										{
+											<div data-user-rate="@(rating.RateValue)" class="starRateDiv d-flex">
+												@for (var i = 0; i < rating.RateValue; i++)
+												{
+													<i data-star-number="@(i+1)" data-is-rated="1" class="starRateIcon bi bi-star-fill pe-1"></i>
+												}
+												@for (var i = 0; i < 5-rating.RateValue; i++)
+												{
+													<i data-star-number="@(i+rating.RateValue+1)" data-is-rated="1" class="starRateIcon bi bi-star pe-1"></i>
+												}
+											</div>
+										}
+										else
+										{
+											<div class="starRateDiv d-flex">
+												<i data-star-number="1" data-is-rated="0" class="starRateIcon bi bi-star pe-1"></i>
+												<i data-star-number="2" data-is-rated="0" class="starRateIcon bi bi-star pe-1"></i>
+												<i data-star-number="3" data-is-rated="0" class="starRateIcon bi bi-star pe-1"></i>
+												<i data-star-number="4" data-is-rated="0" class="starRateIcon bi bi-star pe-1"></i>
+												<i data-star-number="5" data-is-rated="0" class="starRateIcon bi bi-star pe-1"></i>
+											</div>
+										}
+
+										<input type="hidden" name="Page" value="@(ViewBag.Page)"/>
+										<input type="hidden" name="Subject" value="@(ViewBag.Subject)"/>
+										<input type="hidden" name="TitleFilter" value="@(ViewBag.TitleFilter)"/>
+										<input type="hidden" name="Order" value="@(ViewBag.Order)"/>
+										<input type="hidden" name="Sort" value="@(ViewBag.Sort)"/>
+										<input type="hidden" class="starRateValueInput" name="RateValue" />
+									</form>
+									<a class="link-secondary ms-auto" asp-action="Download" asp-controller="StudyMaterial" asp-route-id="@(item.Id)" role="button">
+										<i class="bi bi-download"></i>
+									</a>
+								</div>
+							}
+							
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+		<nav class="mt-3">
+			<ul class="pagination">
+			<li class="page-item @( ViewBag.Page == 0 ? "disabled" : "")">
+				<a class="page-link" asp-action="Browse" 
+				asp-controller="StudyMaterial"
+				asp-route-Page="@(ViewBag.Page - 1)">Previous</a>
+			</li>
+			<li class="page-item @( ViewBag.EndPage ? "disabled" : "")">
+				<a class="page-link" asp-action="Browse" 
+				asp-controller="StudyMaterial"
+				asp-route-Page="@(ViewBag.Page + 1)">Next</a>
+			</li>
+			</ul>
+		</nav>
+	</div>
+</div>
+
+
+@section Scripts {
+	<script>
+		const starRateDivs = document.querySelectorAll(".starRateDiv");
+
+		starRateDivs.forEach(starRateDiv => {
+			starRateDiv.addEventListener("mouseover",(e) => {
+				if(e.target.matches(".starRateIcon"))
+				{
+					const hoveredStar = e.target;
+					const hoveredStarNumber = parseInt(hoveredStar.dataset.starNumber);
+					const stars = e.target.parentNode.querySelectorAll(".starRateIcon");
+
+					stars.forEach(star => {
+						const currentStarNumber = parseInt(star.dataset.starNumber);
+
+						star.classList.toggle("bi-star",hoveredStarNumber < currentStarNumber);
+						star.classList.toggle("bi-star-fill",hoveredStarNumber >= currentStarNumber);
+
+					});
+				
+				}
+			});
+
+			starRateDiv.addEventListener("mouseout",(e) => {
+				const stars = e.target.parentNode.querySelectorAll(".starRateIcon");
+				stars.forEach(star => {
+					const isRated = parseInt(star.dataset.isRated) === 1;
+					if(isRated){
+						const userRate = parseInt(starRateDiv.dataset.userRate);
+						const starNumber = parseInt(star.dataset.starNumber);
+
+						star.classList.toggle("bi-star",starNumber > userRate);
+						star.classList.toggle("bi-star-fill",starNumber <= userRate);
+					}
+					else{
+						star.classList.add("bi-star");
+						star.classList.remove("bi-star-fill");
+					}
+				});
+			});
+
+			const stars = starRateDiv.querySelectorAll(".starRateIcon");
+
+			stars.forEach(star => {
+				star.addEventListener("click",e => {
+					const starRateValueInput = starRateDiv.parentNode.querySelector(".starRateValueInput");
+					starRateValueInput.value = e.target.dataset.starNumber
+					starRateDiv.parentNode.submit();
+				});
+			});
+
+
+		});
+	</script>
+}

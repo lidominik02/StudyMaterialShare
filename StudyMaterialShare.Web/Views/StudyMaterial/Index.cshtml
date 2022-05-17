@@ -1,0 +1,65 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using StudyMaterialShare.Database.Models
+@inject SignInManager<ApplicationUser> signInManager;
+
+@model IEnumerable<StudyMaterialShare.Web.Models.StudyMaterialViewModel>
+
+@{
+    ViewBag.Title = "Kezdőlap";
+}
+
+<div class="d-flex justify-content-center mb-3">
+    <h1>Legfrissebb tananyagok</h1>
+</div>
+
+<div class="table-responsive">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Subject)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.User)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UploadedAt)
+                </th>
+                @if(signInManager.IsSignedIn(User))
+                {
+                    <th class="text-center">Letöltés</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Subject)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.User)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UploadedAt)
+                    </td>
+                    @if(signInManager.IsSignedIn(User))
+                    {
+                        <td class="text-center">
+                            <a class="link-secondary" asp-action="Download" asp-controller="StudyMaterial" asp-route-id="@(item.Id)" role="button">
+                                <i class="bi bi-download"></i>
+                            </a>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

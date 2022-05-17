@@ -1,0 +1,56 @@
+﻿<Window x:Class="StudyMaterialShare.Desktop.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StudyMaterialShare.Desktop"
+        mc:Ignorable="d"
+        Width="450"
+        Height="500"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen">
+    <Grid Background="{StaticResource PrimaryColorBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="auto" />
+            <RowDefinition  Height="4*" />
+            <RowDefinition Height="10*" />
+        </Grid.RowDefinitions>
+        <TextBlock Style="{StaticResource TextWithDarkBackground}"
+                   FontSize="{StaticResource FontSizeXXL}"
+                   FontWeight="Bold"
+                   Text="StudyMaterialShare"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Margin="0,20,0,0"
+                   Grid.Row="1" />
+
+        <StackPanel Grid.Row="2"
+                    Margin="0,30,0,0">
+            <StackPanel>
+                <StackPanel Width="200"
+                            MaxWidth="800">
+                    <Label Style="{StaticResource LabelWithDarkBackground}"
+                           FontSize="{StaticResource FontSizeM}"
+                           HorizontalAlignment="Left"
+                           Content="Felhasználónév:" />
+                    <TextBox FontSize="{StaticResource FontSizeM}" Text="{Binding UserName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                </StackPanel>
+                <StackPanel Width="200"
+                            MaxWidth="800">
+                    <Label FontSize="{StaticResource FontSizeM}"
+                           Style="{StaticResource LabelWithDarkBackground}"
+                           HorizontalAlignment="Left"
+                           Content="Jelszó:" />
+                    <PasswordBox x:Name="passwordBox" FontSize="{StaticResource FontSizeM}"></PasswordBox>
+                </StackPanel>
+            </StackPanel>
+            <Button Content="Belépés"
+                    Width="100"
+                    MaxWidth="300"
+                    Margin="0,10,0,0"
+                    Command="{Binding LoginCommand}"
+                    CommandParameter="{Binding ElementName=passwordBox}"
+                    FontSize="{StaticResource FontSizeM}" />
+        </StackPanel>
+    </Grid>
+</Window>

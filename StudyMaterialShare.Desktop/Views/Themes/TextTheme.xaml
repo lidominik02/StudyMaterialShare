@@ -1,0 +1,28 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="CommonTheme.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="TextBlock"
+           x:Key="TextWithDarkBackground">
+        <Setter Property="Foreground"
+                Value="{StaticResource LightColorBrush}" />
+    </Style>
+    <Style TargetType="TextBlock"
+           x:Key="TextWithLightBackground">
+        <Setter Property="Foreground"
+                Value="{StaticResource DarkColorBrush}" />
+    </Style>
+    <Style TargetType="Label"
+           x:Key="LabelWithDarkBackground">
+        <Setter Property="Foreground"
+                Value="{StaticResource LightColorBrush}" />
+    </Style>
+    <Style TargetType="Label"
+           x:Key="LabelWithLightBackground">
+        <Setter Property="Foreground"
+                Value="{StaticResource DarkColorBrush}" />
+    </Style>
+</ResourceDictionary>

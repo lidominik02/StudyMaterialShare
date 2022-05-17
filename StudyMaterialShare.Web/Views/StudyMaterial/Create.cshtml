@@ -1,0 +1,44 @@
+﻿@model StudyMaterialShare.Web.Models.StudyMaterialViewModel
+
+@{
+    ViewBag.Title = "Tananyag létrehozása";
+}
+
+<div class="d-flex justify-content-center">
+    <h1>Tananyag létrehozása</h1>
+</div>
+<hr />
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-4 bg-light pt-4 pb-3 pe-5 ps-5 border border-1 rounded shadow-sm">
+            <form asp-action="Create" enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Subject" class="control-label"></label>
+                    <select class="form-select" name="subject" asp-items="ViewBag.Subjects">
+						<option></option>
+					</select>
+                    <span asp-validation-for="Subject" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="File" class="control-label"></label>
+                    <input asp-for="File" type="file" class="form-control" />
+                    <span asp-validation-for="File" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-3">
+                    <input type="submit" value="Létrehozás" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

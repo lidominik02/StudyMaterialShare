@@ -1,0 +1,15 @@
+﻿<Application x:Class="StudyMaterialShare.Desktop.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:StudyMaterialShare.Desktop">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="./Views/Themes/CommonTheme.xaml" />
+                <ResourceDictionary Source="./Views/Themes/ButtonTheme.xaml" />
+                <ResourceDictionary Source="./Views/Themes/TextTheme.xaml" />
+                <ResourceDictionary Source="./Views/Themes/ItemControlTheme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
